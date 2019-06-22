@@ -24,7 +24,7 @@ class PangoConan(ConanFile):
 
     def requirements(self):
         self.requires("meson_installer/0.50.0@bincrafters/stable")
-        self.requires("freetype/2.9.1@bincrafters/stable")
+        self.requires("freetype/2.10.0@bincrafters/stable")
         self.requires("fontconfig/2.13.91@conan/stable")
         self.requires("cairo/1.17.2@bincrafters/stable")
         self.requires("harfbuzz/2.4.0@bincrafters/stable")
