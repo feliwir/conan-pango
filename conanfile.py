@@ -26,8 +26,13 @@ class PangoConan(ConanFile):
         if self.settings.os == "Windows":
             del self.options.fPIC
 
+    def build_requirements(self):
+        if not tools.which("pkg-config"):
+            self.build_requires("pkg-config_installer/0.29.2@bincrafters/stable")
+        if not tools.which("meson"):
+            self.build_requires("meson_installer/0.50.0@bincrafters/stable")
+
     def requirements(self):
-        self.requires("meson_installer/0.50.0@bincrafters/stable")
         self.requires("freetype/2.10.0@bincrafters/stable")
         self.requires("fontconfig/2.13.91@conan/stable")
         self.requires("cairo/1.17.2@bincrafters/stable")
