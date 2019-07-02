@@ -60,6 +60,10 @@ class PangoConan(ConanFile):
         return meson
 
     def build(self):
+        tools.replace_in_file(os.path.join(self._source_subfolder, "meson.build"), "subdir('tests')", "")
+        tools.replace_in_file(os.path.join(self._source_subfolder, "meson.build"), "subdir('tools')", "")
+        tools.replace_in_file(os.path.join(self._source_subfolder, "meson.build"), "subdir('utils')", "")
+        tools.replace_in_file(os.path.join(self._source_subfolder, "meson.build"), "subdir('examples')", "")
         shutil.move("freetype.pc", "freetype2.pc")
         meson = self._configure_meson()
         meson.build()
