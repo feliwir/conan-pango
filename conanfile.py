@@ -22,6 +22,10 @@ class PangoConan(ConanFile):
     _source_subfolder = "source_subfolder"
     _autotools = None
 
+    def config_option(self):
+        if self.settings.os == "Windows":
+            del self.options.fPIC
+
     def requirements(self):
         self.requires("meson_installer/0.50.0@bincrafters/stable")
         self.requires("freetype/2.10.0@bincrafters/stable")
