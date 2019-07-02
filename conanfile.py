@@ -40,10 +40,21 @@ class PangoConan(ConanFile):
         extrated_dir = self.name + "-" + self.version
         os.rename(extrated_dir, self._source_subfolder)
 
+    def _configure_meson(self):
+        # FIXME : need components feature
+        glib_pc = os.path.join(self.deps_cpp_info["glib"].rootpath, "lib", "pkgconfig")
+        cairo_pc = os.path.join(self.deps_cpp_info["cairo"].rootpath, "lib", "pkgconfig")
+        pkg_config_paths = [glib_pc, cairo_pc, self.source_folder]
+        defs = dict()
+        defs["gir"] = "false"
+        meson = Meson(self)
+        meson.configure(build_folder="build", source_folder=self._source_subfolder,
+                        pkg_config_paths=pkg_config_paths, defs=defs)
+        return meson
+
     def build(self):
         shutil.move("freetype.pc", "freetype2.pc")
-        meson = Meson(self)
-        meson.configure(build_folder="build",source_folder=self._source_subfolder)
+        meson = self._configure_meson()
         meson.build()
 
     def package(self):
