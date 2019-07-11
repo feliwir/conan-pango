@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import shutil
+import glob
 
 from conans import ConanFile, tools, Meson
 
@@ -35,7 +36,8 @@ class PangoConan(ConanFile):
     def requirements(self):
         # FIXME : package fribidi
         self.requires("freetype/2.10.0@bincrafters/stable")
-        self.requires("fontconfig/2.13.91@conan/stable")
+        if self.settings.os != "Windows":
+            self.requires("fontconfig/2.13.91@conan/stable")
         self.requires("cairo/1.17.2@bincrafters/stable")
         self.requires("harfbuzz/2.4.0@bincrafters/stable")
         self.requires("glib/2.58.3@bincrafters/stable")
@@ -48,22 +50,34 @@ class PangoConan(ConanFile):
         os.rename(extrated_dir, self._source_subfolder)
 
     def _configure_meson(self):
-        # FIXME : need components feature
-        glib_pc = os.path.join(self.deps_cpp_info["glib"].rootpath, "lib", "pkgconfig")
-        cairo_pc = os.path.join(self.deps_cpp_info["cairo"].rootpath, "lib", "pkgconfig")
-        pkg_config_paths = [glib_pc, cairo_pc, self.source_folder]
         defs = dict()
         defs["gir"] = "false"
         meson = Meson(self)
-        meson.configure(build_folder="build", source_folder=self._source_subfolder,
-                        pkg_config_paths=pkg_config_paths, defs=defs)
+        meson.configure(build_folder="build", source_folder=self._source_subfolder, defs=defs)
         return meson
 
+    def _copy_pkg_config(self, name):
+        root = self.deps_cpp_info[name].rootpath
+        pc_dir = os.path.join(root, 'lib', 'pkgconfig')
+        pc_files = glob.glob('%s/*.pc' % pc_dir)
+        if not pc_files:  # zlib store .pc in root
+            pc_files = glob.glob('%s/*.pc' % root)
+        for pc_name in pc_files:
+            new_pc = os.path.basename(pc_name)
+            self.output.warn('copy .pc file %s' % os.path.basename(pc_name))
+            shutil.copy(pc_name, new_pc)
+            prefix = tools.unix_path(root) if self.settings.os == 'Windows' else root
+            tools.replace_prefix_in_pc_file(new_pc, prefix)
+
     def build(self):
-        tools.replace_in_file(os.path.join(self._source_subfolder, "meson.build"), "subdir('tests')", "")
-        tools.replace_in_file(os.path.join(self._source_subfolder, "meson.build"), "subdir('tools')", "")
-        tools.replace_in_file(os.path.join(self._source_subfolder, "meson.build"), "subdir('utils')", "")
-        tools.replace_in_file(os.path.join(self._source_subfolder, "meson.build"), "subdir('examples')", "")
+        self._copy_pkg_config("glib")
+        self._copy_pkg_config("cairo")
+        meson_build = os.path.join(self._source_subfolder, "meson.build")
+        tools.replace_in_file(meson_build, "subdir('tests')", "")
+        tools.replace_in_file(meson_build, "subdir('tools')", "")
+        tools.replace_in_file(meson_build, "subdir('utils')", "")
+        tools.replace_in_file(meson_build, "subdir('examples')", "")
+        tools.replace_in_file(meson_build, "add_project_arguments([ '-FImsvc_recommended_pragmas.h' ], language: 'c')", "")
         shutil.move("freetype.pc", "freetype2.pc")
         meson = self._configure_meson()
         meson.build()
