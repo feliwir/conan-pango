@@ -4,7 +4,8 @@ import os
 import shutil
 import glob
 
-from conans import ConanFile, tools, Meson
+from conans import ConanFile, tools, Meson, VisualStudioBuildEnvironment
+
 
 class PangoConan(ConanFile):
     name = "pango"
@@ -22,6 +23,10 @@ class PangoConan(ConanFile):
     exports = "LICENSE"
     _source_subfolder = "source_subfolder"
     _autotools = None
+
+    @property
+    def _is_msvc(self):
+        return self.settings.compiler == "Visual Studio"
 
     def config_option(self):
         if self.settings.os == "Windows":
@@ -79,13 +84,24 @@ class PangoConan(ConanFile):
         tools.replace_in_file(meson_build, "subdir('examples')", "")
         tools.replace_in_file(meson_build, "add_project_arguments([ '-FImsvc_recommended_pragmas.h' ], language: 'c')", "")
         shutil.move("freetype.pc", "freetype2.pc")
-        meson = self._configure_meson()
-        meson.build()
+        with tools.environment_append(VisualStudioBuildEnvironment(self).vars) if self._is_msvc else tools.no_op():
+            meson = self._configure_meson()
+            meson.build()
+
+    def _fix_library_names(self):
+        if self.settings.compiler == "Visual Studio":
+            with tools.chdir(os.path.join(self.package_folder, "lib")):
+                for filename_old in glob.glob("*.a"):
+                    filename_new = filename_old[3:-2] + ".lib"
+                    self.output.info("rename %s into %s" % (filename_old, filename_new))
+                    shutil.move(filename_old, filename_new)
 
     def package(self):
         self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
-        meson = self._configure_meson()
-        meson.install()
+        with tools.environment_append(VisualStudioBuildEnvironment(self).vars) if self._is_msvc else tools.no_op():
+            meson = self._configure_meson()
+            meson.install()
+        self._fix_library_names()
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
@@ -93,4 +109,3 @@ class PangoConan(ConanFile):
         if self.settings.os == "Linux":
             self.cpp_info.libs.extend(["m", "pthread"])
         self.env_info.PATH.append(os.path.join(self.package_folder, 'bin'))
-
