@@ -53,3 +53,4 @@ install:
 
 script:
   - chmod +x .ci/run.sh
+  - ./.ci/run.sh
