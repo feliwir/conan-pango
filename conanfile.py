@@ -21,6 +21,7 @@ class PangoConan(ConanFile):
     default_options = {"shared": False, "fPIC": True}
     generators = "pkg_config"
     exports = "LICENSE"
+    exports_sources = ["patches/*.patch"]
     _source_subfolder = "source_subfolder"
     _autotools = None
 
@@ -75,6 +76,9 @@ class PangoConan(ConanFile):
             tools.replace_prefix_in_pc_file(new_pc, prefix)
 
     def build(self):
+        for filename in sorted(glob.glob("patches/*.patch")):
+            self.output.info('applying patch "%s"' % filename)
+            tools.patch(base_path=self._source_subfolder, patch_file=filename)
         self._copy_pkg_config("glib")
         self._copy_pkg_config("cairo")
         meson_build = os.path.join(self._source_subfolder, "meson.build")
@@ -83,7 +87,12 @@ class PangoConan(ConanFile):
         tools.replace_in_file(meson_build, "subdir('utils')", "")
         tools.replace_in_file(meson_build, "subdir('examples')", "")
         tools.replace_in_file(meson_build, "add_project_arguments([ '-FImsvc_recommended_pragmas.h' ], language: 'c')", "")
-        shutil.move("freetype.pc", "freetype2.pc")
+        shutil.copy("freetype.pc", "freetype2.pc")
+        shutil.copy("pcre.pc", "libpcre.pc")
+        shutil.copy("pixman.pc", "pixman-1.pc")
+        # hack : link with private libraries for transitive deps, components feature will solve that
+        tools.replace_in_file("cairo.pc", "Libs:", "Libs.old:")
+        tools.replace_in_file("cairo.pc", "Libs.private:", "Libs: -lcairo")
         with tools.environment_append(VisualStudioBuildEnvironment(self).vars) if self._is_msvc else tools.no_op():
             meson = self._configure_meson()
             meson.build()
