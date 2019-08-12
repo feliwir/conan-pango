@@ -39,13 +39,13 @@ class PangoConan(ConanFile):
             self.build_requires("meson_installer/0.50.0@bincrafters/stable")
 
     def requirements(self):
-        # FIXME : package fribidi
         self.requires("freetype/2.10.0@bincrafters/stable")
         if self.settings.os != "Windows":
             self.requires("fontconfig/2.13.91@conan/stable")
         self.requires("cairo/1.17.2@bincrafters/stable")
         self.requires("harfbuzz/2.4.0@bincrafters/stable")
         self.requires("glib/2.58.3@bincrafters/stable")
+        self.requires("fribidi/1.0.5@bincrafters/stable")
 
     def source(self):
         source_url = "https://github.com/GNOME/pango/archive/{}.tar.gz"
