@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import os
 import shutil
 import glob
@@ -40,7 +38,7 @@ class PangoConan(ConanFile):
             self.build_requires("meson_installer/0.50.0@bincrafters/stable")
 
     def requirements(self):
-        self.requires("freetype/2.10.0@bincrafters/stable")
+        self.requires("freetype/2.10.0")
         if self.settings.os != "Windows":
             self.requires("fontconfig/2.13.91@conan/stable")
         self.requires("cairo/1.17.2@bincrafters/stable")
