@@ -85,7 +85,6 @@ class PangoConan(ConanFile):
         tools.replace_in_file(meson_build, "subdir('utils')", "")
         tools.replace_in_file(meson_build, "subdir('examples')", "")
         tools.replace_in_file(meson_build, "add_project_arguments([ '-FImsvc_recommended_pragmas.h' ], language: 'c')", "")
-        shutil.move("bzip2.pc", "BZip2.pc")
         shutil.move("zlib.pc", "ZLIB.pc")
         shutil.copy("pcre.pc", "libpcre.pc")
         shutil.copy("pixman.pc", "pixman-1.pc")
