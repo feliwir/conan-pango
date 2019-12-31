@@ -87,8 +87,6 @@ class PangoConan(ConanFile):
         tools.replace_in_file(meson_build, "add_project_arguments([ '-FImsvc_recommended_pragmas.h' ], language: 'c')", "")
         shutil.copy("pcre.pc", "libpcre.pc")
         shutil.copy("pixman.pc", "pixman-1.pc")
-        if self.settings.os != "Windows":
-            shutil.move("expat.pc", "EXPAT.pc")
         # hack : link with private libraries for transitive deps, components feature will solve that
         tools.replace_in_file("cairo.pc", "Libs:", "Libs.old:")
         tools.replace_in_file("cairo.pc", "Libs.private:", "Libs: -lcairo")
