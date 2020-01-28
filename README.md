@@ -1,66 +1,42 @@
-[![Download](https://api.bintray.com/packages/bincrafters/public-conan/pango%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/pango%3Abincrafters/_latestVersion)
-[![Build Status Travis](https://travis-ci.com/bincrafters/conan-pango.svg?branch=stable%2F1.44.7)](https://travis-ci.com/bincrafters/conan-pango)
-[![Build Status AppVeyor](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-pango?branch=stable%2F1.44.7&svg=true)](https://ci.appveyor.com/project/bincrafters/conan-pango)
+## Package Status
 
-## Conan package recipe for [*pango*](https://www.pango.org/)
+| Bintray | Windows | Linux & macOS |
+|:--------:|:---------:|:-----------------:|
+|[![Download](https://api.bintray.com/packages/bincrafters/public-conan/package_pango%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/pango%3Abincrafters/_latestVersion)|[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-pango?svg=true)](https://ci.appveyor.com/project/bincrafters/conan-pango)|[![Build Status](https://travis-ci.com/bincrafters/conan-pango.svg)](https://travis-ci.com/bincrafters/conan-pango)|
 
-Internationalized text layout and rendering library
+## Conan Information
 
-The packages generated with this **conanfile** can be found on [Bintray](https://bintray.com/bincrafters/public-conan/pango%3Abincrafters).
+Bincrafters packages can be found in the following public Conan repository:
+
+[Bincrafters Public Conan Repository on Bintray](https://bintray.com/bincrafters/public-conan)
+
+*Note: You can click the "Set Me Up" button on the Bintray page above for instructions on using packages from this repository.*
 
 
 ## Issues
 
-If you wish to report an issue or make a request for a package, please do so here:
+If you wish to report an issue or make a request for a Bincrafters package, please do so here:
 
-[Issues Tracker](https://github.com/bincrafters/community/issues)
-
-
-## For Users
-
-### Basic setup
-
-    $ conan install pango/1.44.7@bincrafters/stable
-
-### Project setup
-
-If you handle multiple dependencies in your project is better to add a *conanfile.txt*
-
-    [requires]
-    pango/1.44.7@bincrafters/stable
-
-    [generators]
-    pkg_config
-
-Complete the installation of requirements for your project running:
-
-    $ mkdir build && cd build && conan install ..
-
-Note: It is recommended that you run conan install from a build directory and not the root of the project directory.  This is because conan generates *conanbuildinfo* files specific to a single build configuration which by default comes from an autodetected default profile located in ~/.conan/profiles/default .  If you pass different build configuration options to conan install, it will generate different *conanbuildinfo* files.  Thus, they should not be added to the root of the project, nor committed to git.
+[Bincrafters Community Issues](https://github.com/bincrafters/community/issues)
 
 
-## Build and package
+## General Information
 
-The following command both runs all the steps of the conan file, and publishes the package to the local system cache.  This includes downloading dependencies from "build_requires" and "requires" , and then running the build() method.
+This git repository is managed by the Bincrafters team and holds files related to Conan.  For detailed information about Bincrafters and Conan, please visit the following resources:
 
-    $ conan create . bincrafters/stable
+[Conan Documentation](https://docs.conan.io)
 
+[Bincrafters Technical Documentation](http://bincrafters.readthedocs.io/en/latest/)
 
-### Available Options
-| Option        | Default | Possible Values  |
-| ------------- |:----------------- |:------------:|
-| shared      | False |  [True, False] |
-| fPIC      | True |  [True, False] |
+[Bincrafters Blog](https://bincrafters.github.io)
 
 
-## Add Remote
+## License Information
 
-    $ conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+Bincrafters packages are hosted on [Bintray](https://bintray.com) and contain software which is licensed by the software's maintainers and NOT Bincrafters.
 
+The contents of this GIT repository are completely separate from the software being packaged and therefore licensed separately. The license for all files contained in this GIT repository are defined in the [LICENSE.md](LICENSE.md) file in this repository. The licenses included with all Conan packages published by Bincrafters can be found in the Conan package directories in the following locations, relative to the Conan Cache root (`~/.conan` by default):
 
-## Conan Recipe License
+    ~/.conan/data/pango/<pkg_version>/bincrafters/package/<random_package_id>/license/<LICENSE_FILES_HERE>
 
-NOTE: The conan recipe license applies only to the files of this recipe, which can be used to build and package pango.
-It does *not* in any way apply or is related to the actual software being packaged.
-
-[MIT](https://github.com/feliwir/conan-pango/blob/stable/1.44.7/LICENSE.md)
+*Note :   The most common filenames for OSS licenses are `LICENSE` AND `COPYING` without file extensions.*
