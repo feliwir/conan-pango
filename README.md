@@ -1,6 +1,6 @@
 [![Download](https://api.bintray.com/packages/bincrafters/public-conan/pango%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/pango%3Abincrafters/_latestVersion)
-[![Build Status Travis](https://travis-ci.com/bincrafters/conan-pango.svg?branch=stable%2F1.43.0)](https://travis-ci.com/bincrafters/conan-pango)
-[![Build Status AppVeyor](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-pango?branch=stable%2F1.43.0&svg=true)](https://ci.appveyor.com/project/bincrafters/conan-pango)
+[![Build Status Travis](https://travis-ci.com/bincrafters/conan-pango.svg?branch=stable%2F1.44.7)](https://travis-ci.com/bincrafters/conan-pango)
+[![Build Status AppVeyor](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-pango?branch=stable%2F1.44.7&svg=true)](https://ci.appveyor.com/project/bincrafters/conan-pango)
 
 ## Conan package recipe for [*pango*](https://www.pango.org/)
 
@@ -20,14 +20,14 @@ If you wish to report an issue or make a request for a package, please do so her
 
 ### Basic setup
 
-    $ conan install pango/1.43.0@bincrafters/stable
+    $ conan install pango/1.44.7@bincrafters/stable
 
 ### Project setup
 
 If you handle multiple dependencies in your project is better to add a *conanfile.txt*
 
     [requires]
-    pango/1.43.0@bincrafters/stable
+    pango/1.44.7@bincrafters/stable
 
     [generators]
     pkg_config
@@ -63,4 +63,4 @@ The following command both runs all the steps of the conan file, and publishes t
 NOTE: The conan recipe license applies only to the files of this recipe, which can be used to build and package pango.
 It does *not* in any way apply or is related to the actual software being packaged.
 
-[MIT](https://github.com/feliwir/conan-pango/blob/stable/1.43.0/LICENSE.md)
+[MIT](https://github.com/feliwir/conan-pango/blob/stable/1.44.7/LICENSE.md)
