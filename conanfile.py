@@ -38,7 +38,7 @@ class PangoConan(ConanFile):
             self.build_requires("meson/0.53.0")
 
     def requirements(self):
-        self.requires("freetype/2.10.0")
+        self.requires("freetype/2.10.1")
         if self.settings.os != "Windows":
             self.requires("fontconfig/2.13.91@conan/stable")
         self.requires("cairo/1.17.2@bincrafters/stable")
@@ -64,8 +64,6 @@ class PangoConan(ConanFile):
         root = self.deps_cpp_info[name].rootpath
         pc_dir = os.path.join(root, 'lib', 'pkgconfig')
         pc_files = glob.glob('%s/*.pc' % pc_dir)
-        if not pc_files:  # zlib store .pc in root
-            pc_files = glob.glob('%s/*.pc' % root)
         for pc_name in pc_files:
             new_pc = os.path.basename(pc_name)
             self.output.warn('copy .pc file %s' % os.path.basename(pc_name))
@@ -77,15 +75,14 @@ class PangoConan(ConanFile):
         for filename in sorted(glob.glob("patches/*.patch")):
             self.output.info('applying patch "%s"' % filename)
             tools.patch(base_path=self._source_subfolder, patch_file=filename)
-        self._copy_pkg_config("glib")
-        self._copy_pkg_config("cairo")
+        for package in self.deps_cpp_info.deps:
+            self._copy_pkg_config(package)
         meson_build = os.path.join(self._source_subfolder, "meson.build")
         tools.replace_in_file(meson_build, "subdir('tests')", "")
         tools.replace_in_file(meson_build, "subdir('tools')", "")
         tools.replace_in_file(meson_build, "subdir('utils')", "")
         tools.replace_in_file(meson_build, "subdir('examples')", "")
         tools.replace_in_file(meson_build, "add_project_arguments([ '-FImsvc_recommended_pragmas.h' ], language: 'c')", "")
-        shutil.copy("pixman.pc", "pixman-1.pc")
         # hack : link with private libraries for transitive deps, components feature will solve that
         tools.replace_in_file("cairo.pc", "Libs:", "Libs.old:")
         tools.replace_in_file("cairo.pc", "Libs.private:", "Libs: -lcairo")
