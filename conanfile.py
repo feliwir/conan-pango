@@ -114,7 +114,7 @@ class PangoConan(ConanFile):
         self._fix_library_names()
 
     def package_info(self):
-        self.cpp_info.libs = tools.collect_libs(self)
+        self.cpp_info.libs = ['pangocairo-1.0', 'pangoft2-1.0', 'pangoxft-1.0', 'pango-1.0']
         self.cpp_info.includedirs.append(os.path.join(self.package_folder, "include", "pango-1.0"))
         if self.settings.os == "Linux":
             self.cpp_info.libs.extend(["m", "pthread"])
