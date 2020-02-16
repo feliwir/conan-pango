@@ -114,13 +114,8 @@ class PangoConan(ConanFile):
         self._fix_library_names()
 
     def package_info(self):
-        # Pango should be inserted last
-        pango_lib_name = "pango-1.0"
-        libs = tools.collect_libs(self)
-        libs.remove(pango_lib_name)
-        libs.append(pango_lib_name)
-        self.cpp_info.libs = libs
-        self.cpp_info.includedirs.append(os.path.join(self.package_folder, "include", pango_lib_name))
+        self.cpp_info.libs = ['pangocairo-1.0', 'pangoft2-1.0', 'pangoxft-1.0', 'pango-1.0']
+        self.cpp_info.includedirs.append(os.path.join(self.package_folder, "include", "pango-1.0"))
         if self.settings.os == "Linux":
             self.cpp_info.libs.extend(["m", "pthread"])
         self.env_info.PATH.append(os.path.join(self.package_folder, 'bin'))
