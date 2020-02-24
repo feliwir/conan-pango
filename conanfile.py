@@ -77,6 +77,8 @@ class PangoConan(ConanFile):
             for dirpath, _, filenames in os.walk(lib_path):
                 for filename in filenames:
                     if filename.endswith('.pc'):
+                        if filename in ["cairo.pc", "fontconfig.pc"]:
+                            continue
                         shutil.copyfile(os.path.join(dirpath, filename), filename)
                         tools.replace_prefix_in_pc_file(filename, tools.unix_path(lib_path) if self.settings.os == 'Windows' else lib_path)
         meson_build = os.path.join(self._source_subfolder, "meson.build")
@@ -85,9 +87,6 @@ class PangoConan(ConanFile):
         tools.replace_in_file(meson_build, "subdir('utils')", "")
         tools.replace_in_file(meson_build, "subdir('examples')", "")
         tools.replace_in_file(meson_build, "add_project_arguments([ '-FImsvc_recommended_pragmas.h' ], language: 'c')", "")
-        # hack : link with private libraries for transitive deps, components feature will solve that
-        tools.replace_in_file("cairo.pc", "Libs:", "Libs.old:")
-        tools.replace_in_file("cairo.pc", "Libs.private:", "Libs: -lcairo")
         with tools.environment_append(VisualStudioBuildEnvironment(self).vars) if self._is_msvc else tools.no_op():
             meson = self._configure_meson()
             meson.build()
