@@ -68,23 +68,17 @@ class PangoConan(ConanFile):
         meson.configure(build_folder="build", source_folder=self._source_subfolder, defs=defs, args=['--wrap-mode=nofallback'])
         return meson
 
-    def _copy_pkg_config(self, name):
-        root = self.deps_cpp_info[name].rootpath
-        pc_dir = os.path.join(root, 'lib', 'pkgconfig')
-        pc_files = glob.glob('%s/*.pc' % pc_dir)
-        for pc_name in pc_files:
-            new_pc = os.path.basename(pc_name)
-            self.output.warn('copy .pc file %s' % os.path.basename(pc_name))
-            shutil.copy(pc_name, new_pc)
-            prefix = tools.unix_path(root) if self.settings.os == 'Windows' else root
-            tools.replace_prefix_in_pc_file(new_pc, prefix)
-
     def build(self):
         for filename in sorted(glob.glob("patches/*.patch")):
             self.output.info('applying patch "%s"' % filename)
             tools.patch(base_path=self._source_subfolder, patch_file=filename)
         for package in self.deps_cpp_info.deps:
-            self._copy_pkg_config(package)
+            lib_path = self.deps_cpp_info[package].rootpath
+            for dirpath, _, filenames in os.walk(lib_path):
+                for filename in filenames:
+                    if filename.endswith('.pc'):
+                        shutil.copyfile(os.path.join(dirpath, filename), filename)
+                        tools.replace_prefix_in_pc_file(filename, tools.unix_path(lib_path) if self.settings.os == 'Windows' else lib_path)
         meson_build = os.path.join(self._source_subfolder, "meson.build")
         tools.replace_in_file(meson_build, "subdir('tests')", "")
         tools.replace_in_file(meson_build, "subdir('tools')", "")
