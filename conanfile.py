@@ -16,7 +16,7 @@ class PangoConan(ConanFile):
     topics = ("conan", "fontconfig", "fonts", "freedesktop")
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+    default_options = {"shared": True, "fPIC": True}
     generators = "pkg_config"
     exports = "LICENSE"
     exports_sources = ["patches/*.patch"]
