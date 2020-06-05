@@ -8,7 +8,7 @@ from conans import ConanFile, tools, Meson, VisualStudioBuildEnvironment
 class PangoConan(ConanFile):
     name = "pango"
     version = "1.44.7"
-    license = "MIT"
+    license = "LGPL-2.0-and-later"
     url = "https://github.com/bincrafters/conan-pango"
     description = "Internationalized text layout and rendering library"
     homepage = "https://www.pango.org/"
