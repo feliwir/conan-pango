@@ -7,7 +7,7 @@ from conans import ConanFile, tools, Meson, VisualStudioBuildEnvironment
 
 class PangoConan(ConanFile):
     name = "pango"
-    version = "1.44.7"
+    version = "1.45.2"
     license = "LGPL-2.0-and-later"
     url = "https://github.com/bincrafters/conan-pango"
     description = "Internationalized text layout and rendering library"
@@ -47,7 +47,7 @@ class PangoConan(ConanFile):
 
     def source(self):
         source_url = "https://github.com/GNOME/pango/archive/{}.tar.gz"
-        sha256 = "695bbf21fc3ac0f0ff12c9566eea6e4a169d98a3f0660b357ce208dbd21b0a4b"
+        sha256 = "8de8d7b464e585a76af244cf3b4aa67d3ad2d3a3ce1d340fe1a2dabd9e01117b"
         tools.get(source_url.format(self.version), sha256=sha256)
         extrated_dir = self.name + "-" + self.version
         os.rename(extrated_dir, self._source_subfolder)
@@ -77,7 +77,6 @@ class PangoConan(ConanFile):
         tools.replace_in_file(meson_build, "subdir('tools')", "")
         tools.replace_in_file(meson_build, "subdir('utils')", "")
         tools.replace_in_file(meson_build, "subdir('examples')", "")
-        tools.replace_in_file(meson_build, "add_project_arguments([ '-FImsvc_recommended_pragmas.h' ], language: 'c')", "")
         with tools.environment_append(VisualStudioBuildEnvironment(self).vars) if self._is_msvc else tools.no_op():
             meson = self._configure_meson()
             meson.build()
