@@ -43,7 +43,7 @@ class PangoConan(ConanFile):
         self.requires("cairo/1.17.2@bincrafters/stable")
         self.requires("harfbuzz/2.6.4@bincrafters/stable")
         self.requires("glib/2.64.0@bincrafters/stable")
-        self.requires("fribidi/1.0.5@bincrafters/stable")
+        self.requires("fribidi/1.0.9")
 
     def source(self):
         source_url = "https://github.com/GNOME/pango/archive/{}.tar.gz"
