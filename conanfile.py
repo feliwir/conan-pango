@@ -42,7 +42,7 @@ class PangoConan(ConanFile):
             self.requires("fontconfig/2.13.91")
         self.requires("cairo/1.17.2@bincrafters/stable")
         self.requires("harfbuzz/2.6.8")
-        self.requires("glib/2.64.0@bincrafters/stable")
+        self.requires("glib/2.65.0")
         self.requires("fribidi/1.0.9")
 
     def source(self):
