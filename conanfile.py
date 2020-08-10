@@ -7,7 +7,7 @@ from conans import ConanFile, tools, Meson, VisualStudioBuildEnvironment
 
 class PangoConan(ConanFile):
     name = "pango"
-    version = "1.45.3"
+    version = "1.45.5"
     license = "LGPL-2.0-and-later"
     url = "https://github.com/bincrafters/conan-pango"
     description = "Internationalized text layout and rendering library"
@@ -47,7 +47,7 @@ class PangoConan(ConanFile):
 
     def source(self):
         source_url = "https://github.com/GNOME/pango/archive/{}.tar.gz"
-        sha256 = "1463686b86307487277a09f2823f33bf04a73a4210dc0458c1e63d1d9e83313d"
+        sha256 = "6c9becc104c8f1a7f6012bb0f06415e5b73190d151d17a5c6c5d4c12aa02a5c7"
         tools.get(source_url.format(self.version), sha256=sha256)
         extrated_dir = self.name + "-" + self.version
         os.rename(extrated_dir, self._source_subfolder)
