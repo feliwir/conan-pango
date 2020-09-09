@@ -15,8 +15,8 @@ class PangoConan(ConanFile):
     author = "Bincrafters"
     topics = ("conan", "fontconfig", "fonts", "freedesktop")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False], "libthai": [True, False], "cairo": [True, False], "xft": [True, False]}
-    default_options = {"shared": True, "fPIC": True, "libthai": False, "cairo": True, "xft": True}
+    options = {"shared": [True, False], "fPIC": [True, False], "libthai": [True, False], "cairo": [True, False], "xft": [True, False, "auto"]}
+    default_options = {"shared": True, "fPIC": True, "libthai": False, "cairo": True, "xft": "auto"}
     generators = "pkg_config"
     exports = "LICENSE"
     exports_sources = ["patches/*.patch"]
@@ -52,6 +52,10 @@ class PangoConan(ConanFile):
         tools.get(source_url.format(self.version), sha256=sha256)
         extrated_dir = self.name + "-" + self.version
         os.rename(extrated_dir, self._source_subfolder)
+
+    def configure(self):
+        if(self.options.xft == "auto"):
+            self.options.xft = (self.settings.os == 'Linux' or self.settings.os == 'FreeBSD')
 
     def _configure_meson(self):
         defs = dict()
