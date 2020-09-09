@@ -56,10 +56,10 @@ class PangoConan(ConanFile):
     def _configure_meson(self):
         defs = dict()
         defs["introspection"] = "false"
-       	defs["libthai"] = "enabled" if self.options.libthai else "disabled"
-       	defs["cairo"] = "enabled" if self.options.cairo else "disabled"
-       	defs["xft"] = "enabled" if self.options.xft else "disabled"
-	        
+        defs["libthai"] = "enabled" if self.options.libthai else "disabled"
+        defs["cairo"] = "enabled" if self.options.cairo else "disabled"
+        defs["xft"] = "enabled" if self.options.xft else "disabled"
+        
         meson = Meson(self)
         meson.configure(build_folder="build", source_folder=self._source_subfolder, defs=defs, args=['--wrap-mode=nofallback'])
         return meson
