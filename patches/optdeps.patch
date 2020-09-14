@@ -1,5 +1,5 @@
 diff --git a/meson.build b/meson.build
-index 160a9152..20f73947 100644
+index 9708f826..ca160f4f 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -216,7 +216,7 @@ fribidi_dep = dependency('fribidi', version: fribidi_req_version,
@@ -11,7 +11,62 @@ index 160a9152..20f73947 100644
  if thai_dep.found()
    pango_conf.set('HAVE_LIBTHAI', 1)
    pango_deps += thai_dep
-@@ -341,7 +341,7 @@ if build_pangoft2
+@@ -270,16 +270,24 @@ endif
+ pango_deps += harfbuzz_dep
+ 
+ # Only use FontConfig fallback when required or requested
+-fontconfig_required = (host_system != 'windows' and host_system != 'darwin') or get_option('use_fontconfig')
+ 
+-fontconfig_dep = dependency('fontconfig', version: fontconfig_req_version, required: false)
++fontconfig_option = get_option('fontconfig')
++
++fontconfig_sys_required = (host_system != 'windows' and host_system != 'darwin')
++if fontconfig_sys_required and fontconfig_option.disabled()
++  error('Fontconfig is required on this platform (pass -Dfontconfig=enabled or -Dfontconfig=auto)')
++endif
++
++fontconfig_required = fontconfig_sys_required or fontconfig_option.enabled()
++
++fontconfig_dep = dependency('fontconfig', version: fontconfig_req_version, required: fontconfig_option)
+ if fontconfig_dep.found()
+   fontconfig_pc = 'fontconfig'
+ else
+   if cc.get_id() == 'msvc' and cc.has_header('fontconfig/fontconfig.h')
+     # Look for the Visual Studio-style import library if FontConfig's .pc file cannot be
+     # found on Visual Studio
+-    fontconfig_dep = cc.find_library('fontconfig', required: false)
++    fontconfig_dep = cc.find_library('fontconfig', required: fontconfig_option)
+     if fontconfig_dep.found()
+       fontconfig_lib = '-lfontconfig'
+     endif
+@@ -312,7 +320,7 @@ message('fontconfig has FcWeightFromOpenTypeDouble: ' + res)
+ 
+ # The first version of freetype with a pkg-config file is 2.1.5
+ # We require both fontconfig and freetype if we are to have either.
+-freetype_dep = dependency('freetype2', required: false)
++freetype_dep = dependency('freetype2', required: get_option('freetype'))
+ 
+ if freetype_dep.found()
+   freetype2_pc = 'freetype2'
+@@ -320,7 +328,7 @@ else
+   if cc.get_id() == 'msvc' and cc.has_header('ft2build.h')
+     foreach ft2_lib: ['freetype', 'freetypemt']
+       if not freetype_dep.found()
+-        freetype_dep = cc.find_library(ft2_lib, required: false)
++        freetype_dep = cc.find_library(ft2_lib, required: get_option('freetype'))
+         if freetype_dep.found()
+           freetype2_lib = '-l@0@'.format(ft2_lib)
+         endif
+@@ -330,7 +338,7 @@ else
+ endif
+ 
+ if fontconfig_required and not freetype_dep.found()
+-  freetype_dep = dependency('freetype2', required: false,
++  freetype_dep = dependency('freetype2', required: get_option('freetype'),
+                             fallback: ['freetype2', 'freetype_dep'])
+ endif
+ 
+@@ -341,7 +349,7 @@ if build_pangoft2
    pango_deps += freetype_dep
  endif
  
@@ -20,7 +75,7 @@ index 160a9152..20f73947 100644
  if xft_dep.found() and fontconfig_dep.found() and freetype_dep.found()
    pango_conf.set('HAVE_XFT', 1)
    pango_deps += dependency('xrender', required: false)
-@@ -364,7 +364,7 @@ if host_system == 'darwin'
+@@ -364,7 +372,7 @@ if host_system == 'darwin'
  endif
  
  cairo_found_type = ''
@@ -29,7 +84,7 @@ index 160a9152..20f73947 100644
  
  if cairo_dep.found()
    cairo_found_type = cairo_dep.type_name()
-@@ -379,7 +379,7 @@ endif
+@@ -379,7 +387,7 @@ endif
  # in a declarative way
  if not cairo_dep.found()
    cairo_dep = dependency('cairo', version: cairo_req_version,
@@ -39,10 +94,22 @@ index 160a9152..20f73947 100644
  endif
  
 diff --git a/meson_options.txt b/meson_options.txt
-index b0395b5e..437ba149 100644
+index b0395b5e..5aa7c795 100644
 --- a/meson_options.txt
 +++ b/meson_options.txt
-@@ -18,3 +18,15 @@ option('sysprof',
+@@ -10,11 +10,27 @@ option('install-tests',
+        description : 'Install tests',
+        type: 'boolean',
+        value: 'false')
+-option('use_fontconfig',
+-       description : 'Force using FontConfig where it is optional, on Windows and macOS.  This is ignored on platforms where it is required',
+-       type: 'boolean',
+-       value: 'false')
++option('fontconfig',
++       description : 'Build with FontConfig support. Passing \'auto\' or \'disabled\' disables fontconfig where it is optional, i.e. on Windows and macOS. Passing \'disabled\' on platforms where fontconfig is required results in error.',
++       type: 'feature',
++       value: 'auto')
+ option('sysprof',
         type : 'feature',
         value : 'disabled',
         description : 'include tracing support for sysprof')
@@ -58,6 +125,10 @@ index b0395b5e..437ba149 100644
 +       type : 'feature',
 +       value : 'auto',
 +       description : 'Build with xft support')
++option('freetype',
++       type : 'feature',
++       value : 'auto',
++       description : 'Build with freetype support')
 diff --git a/tests/meson.build b/tests/meson.build
 index 234fbf63..6e10e2b7 100644
 --- a/tests/meson.build

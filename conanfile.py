@@ -15,8 +15,8 @@ class PangoConan(ConanFile):
     author = "Bincrafters"
     topics = ("conan", "fontconfig", "fonts", "freedesktop")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False], "libthai": [True, False], "cairo": [True, False], "xft": [True, False, "auto"]}
-    default_options = {"shared": True, "fPIC": True, "libthai": False, "cairo": True, "xft": "auto"}
+    options = {"shared": [True, False], "fPIC": [True, False], "libthai": [True, False], "cairo": [True, False], "xft": [True, False, "auto"], "freetype": [True, False], "fontconfig": [True, False, "auto"]}
+    default_options = {"shared": True, "fPIC": True, "libthai": False, "cairo": True, "xft": "auto", "freetype": True, "fontconfig": "auto"}
     generators = "pkg_config"
     exports = "LICENSE"
     exports_sources = ["patches/*.patch"]
@@ -37,11 +37,12 @@ class PangoConan(ConanFile):
         self.build_requires("meson/0.54.2")
 
     def requirements(self):
-        self.requires("freetype/2.10.2")
-        if self.settings.os != "Windows":
-            self.requires("fontconfig/2.13.91")
+        if self.options.freetype:
+            self.requires("freetype/2.10.2")
+        if self.options.fontconfig:
+            self.requires("fontconfig/2.13.92@produkte+apps+devices+conan+conan-center-index/wo")
         if self.options.cairo:
-        	self.requires("cairo/1.17.2@bincrafters/stable")
+            self.requires("cairo/1.17.2@bincrafters/stable")
         self.requires("harfbuzz/2.6.8")
         self.requires("glib/2.65.1")
         self.requires("fribidi/1.0.9")
@@ -56,6 +57,8 @@ class PangoConan(ConanFile):
     def configure(self):
         if(self.options.xft == "auto"):
             self.options.xft = (self.settings.os == 'Linux' or self.settings.os == 'FreeBSD')
+        if(self.options.fontconfig == "auto"):
+            self.options.fontconfig = (self.settings.os != 'Windows' and self.settings.os == 'Macos')
 
     def _configure_meson(self):
         defs = dict()
@@ -63,6 +66,8 @@ class PangoConan(ConanFile):
         defs["libthai"] = "enabled" if self.options.libthai else "disabled"
         defs["cairo"] = "enabled" if self.options.cairo else "disabled"
         defs["xft"] = "enabled" if self.options.xft else "disabled"
+        defs["fontconfig"] = "enabled" if self.options.fontconfig else "disabled"
+        defs["freetype"] = "enabled" if self.options.freetype else "disabled"
         
         meson = Meson(self)
         meson.configure(build_folder="build", source_folder=self._source_subfolder, defs=defs, args=['--wrap-mode=nofallback'])
