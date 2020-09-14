@@ -58,7 +58,7 @@ class PangoConan(ConanFile):
         if(self.options.xft == "auto"):
             self.options.xft = (self.settings.os == 'Linux' or self.settings.os == 'FreeBSD')
         if(self.options.fontconfig == "auto"):
-            self.options.fontconfig = (self.settings.os != 'Windows' and self.settings.os == 'Macos')
+            self.options.fontconfig = (self.settings.os != 'Windows' and self.settings.os != 'Macos')
 
     def _configure_meson(self):
         defs = dict()
