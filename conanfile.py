@@ -31,7 +31,7 @@ class PangoConan(ConanFile):
 
     def build_requirements(self):
         if not tools.which("pkg-config"):
-            self.build_requires("pkg-config_installer/0.29.2@bincrafters/stable")
+            self.build_requires("pkgconf/1.7.3")
         self.build_requires("meson/0.54.2")
 
     def requirements(self):
@@ -40,7 +40,7 @@ class PangoConan(ConanFile):
             self.requires("fontconfig/2.13.91")
         self.requires("cairo/1.17.2@bincrafters/stable")
         self.requires("harfbuzz/2.6.8")
-        self.requires("glib/2.65.1")
+        self.requires("glib/2.66.0")
         self.requires("fribidi/1.0.9")
 
     def source(self):
