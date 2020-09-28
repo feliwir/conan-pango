@@ -29,6 +29,10 @@ class PangoConan(ConanFile):
         if self.settings.os == "Windows":
             del self.options.fPIC
 
+    def configure(self):
+        del self.settings.compiler.libcxx
+        del self.settings.compiler.cppstd
+
     def build_requirements(self):
         if not tools.which("pkg-config"):
             self.build_requires("pkgconf/1.7.3")
