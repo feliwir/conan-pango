@@ -39,12 +39,12 @@ class PangoConan(ConanFile):
         self.build_requires("meson/0.54.2")
 
     def requirements(self):
-        self.requires("freetype/2.10.2")
+        self.requires("freetype/2.10.4")
         if self.settings.os != "Windows":
             self.requires("fontconfig/2.13.91")
         self.requires("cairo/1.17.2@bincrafters/stable")
         self.requires("harfbuzz/2.6.8")
-        self.requires("glib/2.66.1")
+        self.requires("glib/2.66.2")
         self.requires("fribidi/1.0.9")
 
     def source(self):
